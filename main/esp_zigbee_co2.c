@@ -342,7 +342,7 @@ void update_attribute()
             if (CO2_value != 0)
             {
                 /* Write new CO2_value value */
-                esp_zb_zcl_status_t state_co2 = esp_zb_zcl_set_attribute_val(SENSOR_ENDPOINT, CO2_CUSTOM_CLUSTER, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 0, &CO2_value, false);
+                esp_zb_zcl_status_t state_co2 = esp_zb_zcl_set_attribute_val(SENSOR_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 0, &CO2_value, false);
                 
                 /* Check for error */
                 if(state_co2 != ESP_ZB_ZCL_STATUS_SUCCESS)
@@ -351,7 +351,7 @@ void update_attribute()
                 }
 
                 /* CO2 Cluster is custom and we must report it manually*/
-                reportAttribute(SENSOR_ENDPOINT, CO2_CUSTOM_CLUSTER, 0, &CO2_value, 2);
+                // reportAttribute(SENSOR_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, 0, &CO2_value, 2);
             }
         }
         vTaskDelay(5000 / portTICK_PERIOD_MS);
@@ -423,7 +423,7 @@ void read_server_time()
 {
     esp_zb_zcl_read_attr_cmd_t read_req;
     read_req.address_mode = ESP_ZB_APS_ADDR_MODE_16_ENDP_PRESENT;
-    read_req.attributeID = ESP_ZB_ZCL_ATTR_TIME_LOCAL_TIME_ID;
+    read_req.attr_field = ESP_ZB_ZCL_ATTR_TIME_LOCAL_TIME_ID;
     read_req.clusterID = ESP_ZB_ZCL_CLUSTER_ID_TIME;
     read_req.zcl_basic_cmd.dst_endpoint = 1;
     read_req.zcl_basic_cmd.src_endpoint = 1;
@@ -524,13 +524,12 @@ static void esp_zb_task(void *pvParameters)
     /* Time cluster */
     esp_zb_attribute_list_t *esp_zb_server_time_cluster = esp_zb_zcl_attr_list_create(ESP_ZB_ZCL_CLUSTER_ID_TIME);
     
-    /* Custom cluster for CO2 ( standart cluster not working), solution only for HOMEd */
-    const uint16_t attr_id = 0;
-    const uint8_t attr_type = ESP_ZB_ZCL_ATTR_TYPE_U16;
-    const uint8_t attr_access = ESP_ZB_ZCL_ATTR_MANUF_SPEC | ESP_ZB_ZCL_ATTR_ACCESS_READ_ONLY | ESP_ZB_ZCL_ATTR_ACCESS_REPORTING;
-
-    esp_zb_attribute_list_t *custom_co2_attributes_list = esp_zb_zcl_attr_list_create(CO2_CUSTOM_CLUSTER);
-    esp_zb_custom_cluster_add_custom_attr(custom_co2_attributes_list, attr_id, attr_type, attr_access, &undefined_value);
+    /* CO2 cluster */
+    esp_zb_attribute_list_t *esp_zb_co2_meas_cluster = esp_zb_zcl_attr_list_create(ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT);
+    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID, &undefined_value);
+    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MIN_MEASURED_VALUE_ID, &undefined_value);
+    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MAX_MEASURED_VALUE_ID, &undefined_value);
+    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_TOLERANCE_ID, &undefined_value);
 
     /** Create ota client cluster with attributes.
      *  Manufacturer code, image type and file version should match with configured values for server.
@@ -560,7 +559,7 @@ static void esp_zb_task(void *pvParameters)
     esp_zb_cluster_list_add_humidity_meas_cluster(esp_zb_cluster_list, esp_zb_humidity_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_pressure_meas_cluster(esp_zb_cluster_list, esp_zb_press_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_time_cluster(esp_zb_cluster_list, esp_zb_server_time_cluster, ESP_ZB_ZCL_CLUSTER_CLIENT_ROLE);
-    esp_zb_cluster_list_add_custom_cluster(esp_zb_cluster_list, custom_co2_attributes_list, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_custom_cluster(esp_zb_cluster_list, esp_zb_co2_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_ota_cluster(esp_zb_cluster_list, esp_zb_ota_client_cluster, ESP_ZB_ZCL_CLUSTER_CLIENT_ROLE);
 
     esp_zb_ep_list_t *esp_zb_ep_list = esp_zb_ep_list_create();
