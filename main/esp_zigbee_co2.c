@@ -526,10 +526,10 @@ static void esp_zb_task(void *pvParameters)
     
     /* CO2 cluster */
     esp_zb_attribute_list_t *esp_zb_co2_meas_cluster = esp_zb_zcl_attr_list_create(ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT);
-    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID, &undefined_value);
-    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MIN_MEASURED_VALUE_ID, &undefined_value);
-    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MAX_MEASURED_VALUE_ID, &undefined_value);
-    esp_zb_pressure_meas_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_TOLERANCE_ID, &undefined_value);
+    esp_zb_carbon_dioxide_measurement_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID, &undefined_value);
+    esp_zb_carbon_dioxide_measurement_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MIN_MEASURED_VALUE_ID, &undefined_value);
+    esp_zb_carbon_dioxide_measurement_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MAX_MEASURED_VALUE_ID, &undefined_value);
+    esp_zb_carbon_dioxide_measurement_cluster_add_attr(esp_zb_co2_meas_cluster, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_TOLERANCE_ID, &undefined_value);
 
     /** Create ota client cluster with attributes.
      *  Manufacturer code, image type and file version should match with configured values for server.
@@ -559,7 +559,7 @@ static void esp_zb_task(void *pvParameters)
     esp_zb_cluster_list_add_humidity_meas_cluster(esp_zb_cluster_list, esp_zb_humidity_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_pressure_meas_cluster(esp_zb_cluster_list, esp_zb_press_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_time_cluster(esp_zb_cluster_list, esp_zb_server_time_cluster, ESP_ZB_ZCL_CLUSTER_CLIENT_ROLE);
-    esp_zb_cluster_list_add_custom_cluster(esp_zb_cluster_list, esp_zb_co2_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_carbon_dioxide_measurement_cluster(esp_zb_cluster_list, esp_zb_co2_meas_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_ota_cluster(esp_zb_cluster_list, esp_zb_ota_client_cluster, ESP_ZB_ZCL_CLUSTER_CLIENT_ROLE);
 
     esp_zb_ep_list_t *esp_zb_ep_list = esp_zb_ep_list_create();
