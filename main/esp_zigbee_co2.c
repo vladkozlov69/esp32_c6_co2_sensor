@@ -342,7 +342,7 @@ void update_attribute()
             if (CO2_value != 0)
             {
                 /* Write new CO2_value value */
-                esp_zb_zcl_status_t state_co2 = esp_zb_zcl_set_attribute_val(SENSOR_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 0, &CO2_value, false);
+                esp_zb_zcl_status_t state_co2 = esp_zb_zcl_set_attribute_val(SENSOR_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID, &CO2_value, false);
                 
                 /* Check for error */
                 if(state_co2 != ESP_ZB_ZCL_STATUS_SUCCESS)
